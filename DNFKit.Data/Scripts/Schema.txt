@@ -1,0 +1,144 @@
+﻿SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[Id] [int] NOT NULL,
+	[Username] [varchar](32) NOT NULL,
+	[PasswordHash] [varchar](128) NOT NULL,
+	[PasswordSeed] [varchar](128) NOT NULL,
+	[Token] [varchar](1024) NOT NULL,
+	[ExpiresIn] [datetime] NULL,
+ CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customers](
+	[Id] [int] NOT NULL,
+	[IdType] [smallint] NOT NULL,
+	[IdNumber] [varchar](16) NOT NULL,
+	[IsPositive] [bit] NOT NULL,
+ CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'API_GetUserById')
+   exec('CREATE PROCEDURE [dbo].[API_GetUserById] AS BEGIN SET NOCOUNT ON; END')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[API_GetUserById]
+	@inId int
+AS
+
+	SET NOCOUNT ON;
+
+	SELECT 
+	   [Id]
+      ,[Username]
+      ,[PasswordHash]
+      ,[PasswordSeed]
+      ,[Token]
+      ,[ExpiresIn]
+  FROM [dbo].[Users]
+  WHERE [Id] = @inId;
+
+  SET NOCOUNT OFF;
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'API_GetUserByUsername')
+   exec('CREATE PROCEDURE [dbo].[API_GetUserByUsername] AS BEGIN SET NOCOUNT ON; END')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[API_GetUserByUsername]
+	@inUsername varchar(32)
+AS
+
+	SET NOCOUNT ON;
+
+	SELECT 
+	   [Id]
+      ,[Username]
+      ,[PasswordHash]
+      ,[PasswordSeed]
+      ,[Token]
+      ,[ExpiresIn]
+  FROM [dbo].[Users]
+  WHERE [Username] = @inUsername;
+
+  SET NOCOUNT OFF;
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'API_UpdateUser')
+   exec('CREATE PROCEDURE [dbo].[API_UpdateUser] AS BEGIN SET NOCOUNT ON; END')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[API_UpdateUser]
+	@inId int,
+	@inUsername varchar(32),
+	@inPasswordHash varchar(128),
+	@inPasswordSeed varchar(128),
+	@inToken varchar(1024),
+	@inExpiresIn Datetime
+AS
+
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[Users]
+	SET
+		[Username] = @inUsername,
+		[PasswordHash] = @inPasswordHash,
+		[PasswordSeed] = @inPasswordSeed,
+		[Token] = @inToken,
+		[ExpiresIn] = @inExpiresIn
+	WHERE [Id] = @inId;
+
+  SET NOCOUNT OFF;
+
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'API_GetCustomerByIdNumber')
+   exec('CREATE PROCEDURE [dbo].[API_GetCustomerByIdNumber] AS BEGIN SET NOCOUNT ON; END')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[API_GetCustomerByIdNumber]
+	@inIdType smallint,
+	@inIdNumber varchar(16)
+AS
+
+	SET NOCOUNT ON;
+
+	SELECT 
+	   [Id]
+      ,[IdType]
+      ,[IdNumber]
+      ,[IsPositive]
+  FROM [dbo].[Customers]
+  WHERE [IdType] = @inIdType AND [IdNumber]=@inIdNumber;
+
+  SET NOCOUNT OFF;
+
+GO
