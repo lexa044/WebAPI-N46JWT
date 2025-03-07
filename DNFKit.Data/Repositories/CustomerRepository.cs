@@ -21,9 +21,9 @@ namespace DNFKit.Data.Repositories
         {
             var connection = _session.GetReadOnlyConnection();
             var p = new DynamicParameters();
-            p.Add("inIdType", filter.IdType, DbType.Int16);
-            p.Add("inIdNumber", filter.IdNumber, DbType.AnsiString);
-            return connection.QueryFirstOrDefault<Customer>(sql: "dbo.API_GetCustomerByIdNumber", param: p, transaction: null, commandType: CommandType.StoredProcedure);
+            p.Add("inIdType", filter.IdType);
+            p.Add("inIdNumber", filter.IdNumber);
+            return connection.QueryFirstOrDefault<Customer>(sql: "dbo.API_GetCustomerByIdNumber", param: p, commandType: CommandType.StoredProcedure);
         }
     }
 }

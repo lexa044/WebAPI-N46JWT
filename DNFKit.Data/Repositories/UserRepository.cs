@@ -1,9 +1,10 @@
-﻿using Dapper;
+﻿using System.Data;
+
+using Dapper;
 
 using DNFKit.Core;
 using DNFKit.Core.Models;
 using DNFKit.Core.Repositories;
-using System.Data;
 
 namespace DNFKit.Data.Repositories
 {
@@ -20,16 +21,16 @@ namespace DNFKit.Data.Repositories
         {
             var connection = _session.GetReadOnlyConnection();
             var p = new DynamicParameters();
-            p.Add("inId", id, DbType.Int32);
-            return connection.QueryFirstOrDefault<User>(sql: "dbo.API_GetUserById", param: p, transaction: null, commandType: CommandType.StoredProcedure);
+            p.Add("inId", id);
+            return connection.QueryFirstOrDefault<User>(sql: "dbo.API_GetUserById", param: p, commandType: CommandType.StoredProcedure);
         }
 
         public User FindByUsername(string username)
         {
             var connection = _session.GetReadOnlyConnection();
             var p = new DynamicParameters();
-            p.Add("inUsername", username, DbType.AnsiString);
-            return connection.QueryFirstOrDefault<User>(sql: "dbo.API_GetUserByUsername", param: p, transaction: null, commandType: CommandType.StoredProcedure);
+            p.Add("inUsername", username);
+            return connection.QueryFirstOrDefault<User>(sql: "dbo.API_GetUserByUsername", param: p, commandType: CommandType.StoredProcedure);
         }
 
         public User Update(User model)
@@ -37,14 +38,14 @@ namespace DNFKit.Data.Repositories
             var uom = _session.GetUnitOfWork();
             var connection = uom.GetConnection();
             var p = new DynamicParameters();
-            p.Add("inId", model.Id, DbType.Int32);
-            p.Add("inUsername", model.Username, DbType.AnsiString);
-            p.Add("inPasswordHash", model.PasswordHash, DbType.AnsiString);
-            p.Add("inPasswordSeed", model.PasswordSeed, DbType.AnsiString);
-            p.Add("inToken", model.Token, DbType.AnsiString);
-            p.Add("inExpiresIn", model.ExpiresIn, DbType.DateTime);
+            p.Add("inId", model.Id);
+            p.Add("inUsername", model.Username);
+            p.Add("inPasswordHash", model.PasswordHash);
+            p.Add("inPasswordSeed", model.PasswordSeed);
+            p.Add("inToken", model.Token);
+            p.Add("inExpiresIn", model.ExpiresIn);
 
-            connection.Execute(sql: "dbo.API_UpdateUser", param: p, transaction: uom.GetTransaction(), commandType: CommandType.StoredProcedure);
+            connection.Execute(sql: "dbo.API_UpdateUser", param: p, commandType: CommandType.StoredProcedure);
 
             return model;
         }
