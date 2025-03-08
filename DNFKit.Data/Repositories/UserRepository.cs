@@ -35,8 +35,7 @@ namespace DNFKit.Data.Repositories
 
         public User Update(User model)
         {
-            var uom = _session.GetUnitOfWork();
-            var connection = uom.GetConnection();
+            var connection = _session.GetReadOnlyConnection();
             var p = new DynamicParameters();
             p.Add("inId", model.Id);
             p.Add("inUsername", model.Username);

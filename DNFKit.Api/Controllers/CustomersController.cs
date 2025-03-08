@@ -36,5 +36,24 @@ namespace DNKit.Api.Controllers
 
             return NotFound();
         }
+
+        [HttpPost]
+        public IHttpActionResult SetCustomerByRequest([FromBody] CustomerRequest request)
+        {
+            try
+            {
+                CustomerResponse response = _service.UpdateCustomer(request.IdType, request.IdNumber);
+                if (null != response && response.Id > 0)
+                {
+                    return Ok(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("SetCustomerByRequest", ex);
+            }
+
+            return NotFound();
+        }
     }
 }

@@ -142,3 +142,34 @@ AS
   SET NOCOUNT OFF;
 
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'API_UpdateCustomerByIdNumber')
+   exec('CREATE PROCEDURE [dbo].[API_UpdateCustomerByIdNumber] AS BEGIN SET NOCOUNT ON; END')
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[API_UpdateCustomerByIdNumber]
+	@inIdType smallint,
+	@inIdNumber varchar(16)
+AS
+
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[Customers]
+	SET
+		IsPositive = CASE WHEN IsPositive = 0 THEN 1 ELSE 0 END
+	WHERE [IdType] = @inIdType AND [IdNumber]=@inIdNumber;
+
+	SELECT 
+	   [Id]
+      ,[IdType]
+      ,[IdNumber]
+      ,[IsPositive]
+  FROM [dbo].[Customers]
+  WHERE [IdType] = @inIdType AND [IdNumber]=@inIdNumber;
+
+  SET NOCOUNT OFF;
+
+GO

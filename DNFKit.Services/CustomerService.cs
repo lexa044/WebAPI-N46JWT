@@ -36,5 +36,25 @@ namespace DNFKit.Services
 
             return response;
         }
+
+        public CustomerResponse UpdateCustomer(int idType, string idNumber)
+        {
+            CustomerResponse response = null;
+            Customer filter = new Customer();
+            filter.IdType = idType;
+            filter.IdNumber = idNumber;
+
+            Customer model = _repository.UpdateBy(filter);
+            if (null != model)
+            {
+                response = new CustomerResponse();
+                response.Id = model.Id;
+                response.IdNumber = model.IdNumber;
+                response.IdType = model.IdType;
+                response.IsPositive = model.IsPositive;
+            }
+
+            return response;
+        }
     }
 }

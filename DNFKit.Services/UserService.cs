@@ -44,8 +44,6 @@ namespace DNFKit.Services
                     response.Id = model.Id;
                     response.ExpiresIn = tokenResponse.ExpiresIn;
                     response.Token = tokenResponse.Token;
-
-                    _session.GetUnitOfWork().CommitChanges();
                 }
             }
 
